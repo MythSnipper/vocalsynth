@@ -1,10 +1,11 @@
-
 mod components;
 use components::*;
 
 mod misc;
 use misc::*;
 
+mod renderer;
+use renderer::*;
 
 //makes a list of resonators from a vowel
 fn make_formants(vowel: Vowel, sample_rate: u32) -> (Resonator, Resonator, Resonator) {
@@ -28,8 +29,7 @@ fn make_formants(vowel: Vowel, sample_rate: u32) -> (Resonator, Resonator, Reson
 }
 
 fn main() {
-
-    //some settings
+    //parameters
     let filename: &str = "output.wav";
 
     let f0: f64 = 220.0;

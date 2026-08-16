@@ -184,6 +184,8 @@ impl RadiationFilter {
         y
     }
 }
+
+
 #[derive(Clone, Copy)]
 pub struct Formant {
     pub frequency: f64,
@@ -202,8 +204,6 @@ pub struct VoiceProfile {
     pub e: Vowel,
     pub o: Vowel,
 }
-
-
 
 //vowel definitions
 pub const MALE_A: Vowel = Vowel {
@@ -265,11 +265,6 @@ pub const FEMALE_O: Vowel = Vowel {
     f2: Formant { frequency: 1100.0, bandwidth: 110.0 },
     f3: Formant { frequency: 3100.0, bandwidth: 200.0 },
 };
-
-
-
-
-
 
 pub const MALE_VOICE: VoiceProfile = VoiceProfile {
     a: MALE_A,
