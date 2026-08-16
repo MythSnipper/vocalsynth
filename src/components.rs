@@ -63,7 +63,7 @@ impl NoiseGenerator {
             sum += self.next();
         }
 
-        sum / (16.0_f64 / 3.0).sqrt()
+        sum / 2.0
     }
 }
 pub struct NoiseIntegrator {
@@ -235,8 +235,6 @@ pub const MALE_O: Vowel = Vowel {
     f2: Formant { frequency: 900.0, bandwidth: 90.0 },
     f3: Formant { frequency: 2600.0, bandwidth: 170.0 },
 };
-
-
 
 pub const FEMALE_A: Vowel = Vowel {
     f1: Formant { frequency: 850.0, bandwidth: 120.0 },

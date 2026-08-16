@@ -65,25 +65,26 @@ fn main() {
 
     let h_duration = 0.1;
     let a_duration = 0.5;
+    let trans_duration = 0.005;
 
-    let h_samples =
-        (h_duration * sample_rate as f64) as usize;
+    let trans_samples = (trans_duration * sample_rate as f64) as usize;
+    let h_norm_samples = ((h_duration - trans_duration) * sample_rate as f64) as usize;
 
-    let a_samples =
-        (a_duration * sample_rate as f64) as usize;     
+    let a_samples = (a_duration * sample_rate as f64) as usize;     
 
-        //voicing amplitude
-        AV = 0.0;
-        //aspiration amplitude
-        AH = 60.0;
+    //voicing amplitude
+    AV = 0.0;
+    //aspiration amplitude
+    AH = 60.0;
 
+    /*  H  */
     f1.set(vowel.f1.frequency, 300.0, sample_rate);
-    for _ in 0..h_samples {
+    for _ in 0..h_norm_samples {
         let mut vel: f64 = noise.next_gaussian();
 
-        vel *= ah_to_amplitude(AH);
-
         vel = noise_integrator.process(vel);
+
+        vel *= ah_to_amplitude(AH);
 
         vel = f5.process(vel);
         vel = f4.process(vel);
@@ -96,10 +97,34 @@ fn main() {
         samples.push(vel as f32);
     }
 
-        //voicing amplitude
-        AV = 60.0;
-        //aspiration amplitude
-        AH = 0.0;
+    let ah_start_amp = ah_to_amplitude(AH);
+    let ah_end_amp = ah_to_amplitude(0.0);
+    for i in 0..trans_samples {
+        let t = i as f64 / (trans_samples-1) as f64;
+        let lerp_amp = lerp(ah_start_amp, ah_end_amp, t);
+
+        let mut vel: f64 = noise.next_gaussian();
+
+        vel = noise_integrator.process(vel);
+
+        vel *= lerp_amp;
+
+        vel = f5.process(vel);
+        vel = f4.process(vel);
+        vel = f3.process(vel);
+        vel = f2.process(vel);
+        vel = f1.process(vel);
+        
+        vel = radiation_filter.process(vel);
+        
+        samples.push(vel as f32);
+    }
+
+    /*  A  */
+    //voicing amplitude
+    AV = 60.0;
+    //aspiration amplitude
+    AH = 0.0;
     f1.set(vowel.f1.frequency, vowel.f1.bandwidth, sample_rate);
     for _ in 0..a_samples {
         let mut vel: f64 = pulsetrain.next();
@@ -108,6 +133,7 @@ fn main() {
         vel *= f0;
 
         vel = glottal_filter.process(vel);
+        vel *= 34.8207;
         vel = glottal_zero.process(vel);
 
         vel = f5.process(vel);

@@ -13,6 +13,7 @@ pub fn db_to_amplitude(db: f64) -> f64 {
     10.0_f64.powf(db / 20.0)
 }
 
+const G0_DB: f64 = 47.0;
 const AV_CALIBRATION_DB: f64 = -72.0;
 const AH_CALIBRATION_DB: f64 = -102.0;
 pub fn av_to_amplitude(av_db: f64) -> f64 {
@@ -21,7 +22,7 @@ pub fn av_to_amplitude(av_db: f64) -> f64 {
     }
     else {
         db_to_amplitude(
-            av_db + AV_CALIBRATION_DB
+            G0_DB + av_db + AV_CALIBRATION_DB
         )
     }
 }
@@ -31,7 +32,7 @@ pub fn ah_to_amplitude(ah_db: f64) -> f64 {
     }
     else {
         db_to_amplitude(
-            ah_db + AH_CALIBRATION_DB
+            G0_DB + ah_db + AH_CALIBRATION_DB
         )
     }
 }
@@ -53,26 +54,6 @@ pub fn normalize_samples(samples: &mut Vec<f32>, target_peak: f32) {
         *sample *= gain;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //play samples
